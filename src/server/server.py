@@ -3,6 +3,7 @@
 import asyncio
 import websockets
 import signal
+import sys
 
 #send_updates_delay = 1.0 / 60
 send_updates_delay = 1.0 / 1
@@ -46,8 +47,8 @@ async def handle_connection(websocket, path):
         task.cancel()
 
 
-def start_server():
-    server = websockets.serve(handle_connection, 'localhost', 8765)
+def start_server(port):
+    server = websockets.serve(handle_connection, 'localhost', port)
 
     asyncio.get_event_loop().run_until_complete(server)
     asyncio.get_event_loop().run_forever()
@@ -57,4 +58,7 @@ def start_server():
 
 
 if __name__ == '__main__':
-    start_server()
+    if len(sys.argv) != 2:
+        print('Usage: {} PORT'.format(sys.argv[0]))
+        sys.exit(1)
+    start_server(sys.argv[1])
