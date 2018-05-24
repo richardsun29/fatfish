@@ -4,6 +4,7 @@ import asyncio
 import websockets
 import signal
 import sys
+import json
 
 #SEND_UPDATES_DELAY = 1.0 / 60
 SEND_UPDATES_DELAY = 1.0 / 1
@@ -23,7 +24,8 @@ class Client:
         # listen
         while True:
             message = await self.websocket.recv()
-            print('receive_data: ' + message + ' ' + str(websocket))
+            print('receive_data: ' + message)
+            message = json.loads(message)
 
     async def send_data(self):
         i = 1

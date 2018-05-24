@@ -1,24 +1,15 @@
-var websocket = new WebSocket("ws://127.0.0.1:8765/");
+'use strict';
 
-function receive_data(data) {
-  $('#recv-msg').text(data);
-}
+$(() => {
+  var display = new Display($('#canvas'));
+  display.drawBackground();
 
-function sendbtn() {
-  send_data($('#send-msg').val());
-}
+  var y = 100;
+  setInterval(function() {
+    display.drawFish(1, 100, y++, 10, 'blue');
+    display.canvas.drawLayers();
+  }, 100);
 
-function send_data(data) {
-  websocket.send(data);
-}
-
-$(document).ready(() => {
-  // listen for messages
-  websocket.onmessage = event => receive_data(event.data);
-
-  // send initial message
-  websocket.onopen = () => {};
-
-  // connection close
-  websocket.onclose = event => console.log('Websocket closed.', event);
+  var connection = new Connection('127.0.0.1:8765');
+  connection.connect();
 });

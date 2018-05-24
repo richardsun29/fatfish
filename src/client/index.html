@@ -3,12 +3,16 @@
   <head>
     <title>Fat Fish</title>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jcanvas/21.0.1/min/jcanvas.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
 
+    <link rel="stylesheet" href="css/style.css">
+
     <script src="/js/app.js"></script>
+    <script src="/js/display.js"></script>
+    <script src="/js/connection.js"></script>
   </head>
   <body>
-    <p>Receive: <span id="recv-msg"></span></p>
-    <p>Send: <input id="send-msg"><button onclick="sendbtn()">Send</button></p>
+    <canvas id="canvas" width="800" height="544"></canvas>
   </body>
 </html>
