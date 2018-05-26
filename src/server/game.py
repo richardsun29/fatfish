@@ -61,10 +61,9 @@ class Game:
             self.playerMovements[id] = (deltaX, deltaY)
 
     def move_loop(self):
-        for i, nonplayer in enumerate(self.nonplayers[::-1]):
+        for nonplayer in self.nonplayers:
             nonplayer.move()
-            if nonplayer.x < -50 or nonplayer.x > 150:
-                del self.nonplayers[i]
+        self.nonplayers = [nonplayer for nonplayer in self.nonplayers if nonplayer.x >= -50 and nonplayer.x <= 150]
         for player in self.players:
             if player.id in self.playerMovements:
                 deltaX = self.playerMovements[player.id][0]
@@ -73,14 +72,15 @@ class Game:
             #TODO: collision check
         self.playerMovements = {}
 
-def main():
+def test1():
     g = Game()
     g.create_player(50, 50, 1)
     g.create_player(50, 50, 2)
     g.create_nonplayer(20, 3, 1, LEFT)
     g.move_player(1, 5, 0)
     g.move_player(2, 0, -10)
-    g.move_loop()
+    for i in range(300):
+        g.move_loop()
     players, nonplayers = g.get_fish()
     for player in players:
         print("PLAYER")
@@ -96,4 +96,14 @@ def main():
         print("speed:", nonplayer.speed)
         print("direction:", nonplayer.direction)
         
-#main()
+def test2():
+    g = Game()
+    g.create_nonplayer(20, 3, 1, LEFT)
+    g.create_nonplayer(20, 3, 1, LEFT)
+    g.create_nonplayer(20, 2, 1, LEFT)
+    g.nonplayers[0].x = -100
+    g.nonplayers[1].x = -100
+    g.move_loop()
+    
+#test2()
+    
