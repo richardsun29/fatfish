@@ -3,28 +3,31 @@ LEFT = 0
 RIGHT = 1
 
 class Fish:
-    def __init__(self, x, y, size):
+    def __init__(self, id, x, y, size):
+        self.id = id
         self.x = x
         self.y = y
         self.size = size
         self.image = 0
         
 class Player(Fish):
-    def __init__(self, x, y, id):
-        super(Player, self).__init__(x, y, INIT_PLAYER_SIZE)
-        self.id = id
+    def __init__(self, id, x, y):
+        super(Player, self).__init__(id, x, y, INIT_PLAYER_SIZE)
         
     def move(self, deltaX, deltaY):
         self.x += deltaX
         self.y += deltaY
+
+    def __repr__(self):
+        return 'Player (id = %d, x = %d, y = %d)' % (self.id, self.x, self.y)
         
 class Nonplayer(Fish):
-    def __init__(self, y, size, speed, direction):
+    def __init__(self, id, y, size, speed, direction):
         if direction == LEFT:
             x = 100
         elif direction == RIGHT:
             x = 0
-        super(Nonplayer, self).__init__(x, y, size)
+        super(Nonplayer, self).__init__(id, x, y, size)
         self.speed = speed
         self.direction = direction
         
@@ -33,16 +36,25 @@ class Nonplayer(Fish):
             self.x -= 1
         elif self.direction == RIGHT:
             self.x += 1
+
+    def __repr__(self):
+        return 'Nonplayer (x = %d, y = %d)' % (self.x, self.y)
             
 class Game:
     def __init__(self):
         self.players = []
         self.nonplayers = []
         self.playerMovements = {}
-        
-    def create_player(self, x, y, id):
-        p = Player(x, y, id)
+        self.next_id = 0
+
+    def get_new_id(self):
+        self.next_id += 1
+        return self.next_id
+
+    def create_player(self, x, y):
+        p = Player(self.get_new_id(), x, y)
         self.players.append(p)
+        return p.id
         
     def remove_player(self, id):
         for i, player in enumerate(self.players):
@@ -51,7 +63,7 @@ class Game:
                 break
                 
     def create_nonplayer(self, y, size, speed, direction):
-        np = Nonplayer(y, size, speed, direction)
+        np = Nonplayer(self.get_new_id(), y, size, speed, direction)
         self.nonplayers.append(np)
         
     def get_fish(self):
@@ -74,8 +86,8 @@ class Game:
 
 def test1():
     g = Game()
-    g.create_player(50, 50, 1)
-    g.create_player(50, 50, 2)
+    g.create_player(50, 50)
+    g.create_player(50, 50)
     g.create_nonplayer(20, 3, 1, LEFT)
     g.move_player(1, 5, 0)
     g.move_player(2, 0, -10)

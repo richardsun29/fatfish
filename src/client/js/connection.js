@@ -16,7 +16,7 @@ class Connection {
   }
 
   onmessage(callback) {
-    this.websocket.onmessage = callback;
+    this.websocket.onmessage = event => callback(JSON.parse(event.data));
   }
 
   onclose(callback) {
@@ -24,7 +24,7 @@ class Connection {
   }
 
   receive_data(data) {
-    //console.log(data);
+    console.log(JSON.parse(data));
   }
 
   send_data(action, value) {

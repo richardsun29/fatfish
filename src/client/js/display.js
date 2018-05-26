@@ -1,6 +1,9 @@
 'use strict';
 
 class Display {
+  width = 800;
+  height = 544;
+
   constructor(canvas) {
     this.canvas = canvas;
   }
@@ -10,8 +13,8 @@ class Display {
       layer: true,
       source: 'img/background.jpg',
       scale: 1,
-      x: 800 / 2,
-      y: 544 / 2,
+      x: width / 2,
+      y: height / 2,
     });
   }
 
@@ -33,5 +36,13 @@ class Display {
         shadowBlur: 20
       });
     }
+  }
+
+  draw(data) {
+    data.nonplayers.forEach(p => {
+      this.drawFish(p.id, p.x, p.y, p.id%2 ? 'green': 'red');
+    });
+
+    this.canvas.drawLayers();
   }
 }
