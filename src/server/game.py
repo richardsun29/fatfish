@@ -38,14 +38,15 @@ class Game:
     def __init__(self):
         self.players = []
         self.nonplayers = []
+        self.playerMovements = {}
         
     def create_player(self, x, y, id):
         p = Player(x, y, id)
         self.players.append(p)
         
     def remove_player(self, id):
-        for i in range(len(self.players)):
-            if self.players[i].id == id:
+        for i, player in enumerate(self.players):
+            if player.id == id:
                 del self.players[i]
                 break
                 
@@ -55,13 +56,44 @@ class Game:
         
     def get_fish(self):
         return self.players, self.nonplayers
+        
+    def move_player(self, id, deltaX, deltaY):
+            self.playerMovements[id] = (deltaX, deltaY)
 
-    def move_loop(self, playerMovements):
-        for nonplayer in self.nonplayers:
+    def move_loop(self):
+        for i, nonplayer in enumerate(self.nonplayers[::-1]):
             nonplayer.move()
+            if nonplayer.x < -50 or nonplayer.x > 150:
+                del self.nonplayers[i]
         for player in self.players:
-            if player.id in playerMovements:
-                deltaX = playerMovements[player.id][0]
-                deltaY = playerMovements[player.id][1]
+            if player.id in self.playerMovements:
+                deltaX = self.playerMovements[player.id][0]
+                deltaY = self.playerMovements[player.id][1]
                 player.move(deltaX, deltaY)
             #TODO: collision check
+        self.playerMovements = {}
+
+def main():
+    g = Game()
+    g.create_player(50, 50, 1)
+    g.create_player(50, 50, 2)
+    g.create_nonplayer(20, 3, 1, LEFT)
+    g.move_player(1, 5, 0)
+    g.move_player(2, 0, -10)
+    g.move_loop()
+    players, nonplayers = g.get_fish()
+    for player in players:
+        print("PLAYER")
+        print("x:", player.x)
+        print("y:", player.y)
+        print("size:", player.size)
+        print("id:", player.id)
+    for nonplayer in nonplayers:
+        print("NONPLAYER")
+        print("x:", nonplayer.x)
+        print("y:", nonplayer.y)
+        print("size:", nonplayer.size)
+        print("speed:", nonplayer.speed)
+        print("direction:", nonplayer.direction)
+        
+#main()
