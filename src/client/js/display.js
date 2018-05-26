@@ -20,7 +20,7 @@ class Display {
 
   drawFish(id, x, y, size, shadowColor) {
     var layer = `fish${id}`;
-    var scale = 0.1; //size;
+    var scale = size / 10;
 
     x = this.width  * x / 100;
     y = this.height * y / 100;
@@ -43,7 +43,7 @@ class Display {
 
   draw(data) {
     data.nonplayers.forEach(p => {
-      this.drawFish(p.id, p.x, p.y, p.id%2 ? 'green': 'red');
+      this.drawFish(p.id, p.x, p.y, p.size, p.id%2 ? 'green': 'red');
     });
 
     this.canvas.drawLayers();

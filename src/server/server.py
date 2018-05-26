@@ -8,8 +8,8 @@ import json
 
 import game
 
-#SEND_UPDATES_DELAY = 1.0 / 60
-SEND_UPDATES_DELAY = 1.0 / 1
+SEND_UPDATES_DELAY = 1.0 / 30
+GAME_LOOP_DELAY = 1.0 / 30
 
 class Client:
     def __init__(self, websocket, game):
@@ -44,6 +44,7 @@ class Client:
                     'size': p.size,
                 } for p in players],
                 'nonplayers': [{
+                    'id': p.id,
                     'x': p.x,
                     'y':p.y,
                     'size': p.size,
@@ -61,9 +62,9 @@ class Server:
         self.clients = set()
         self.game = game.Game()
 
-    def start_server(self, port):
+    def start_server(self, ip, port):
         # run server
-        server = websockets.serve(self.handle_connection, 'localhost', port)
+        server = websockets.serve(self.handle_connection, ip, port)
         asyncio.get_event_loop().run_until_complete(server)
         # Stop event loop on ^C
         signal.signal(signal.SIGINT, asyncio.get_event_loop().close)
@@ -83,22 +84,21 @@ class Server:
         counter = 0
         while True:
             if counter % 10 == 0:
-                self.game.create_nonplayer(counter, 3, 1, game.LEFT)
+                self.game.create_nonplayer(counter, 2, 1, game.LEFT)
             counter += 1
             if counter == 100:
                 counter = 0
 
             self.game.move_loop()
-            print('game loop')
             #players, nonplayers = self.game.get_fish()
             #print(nonplayers)
-            await asyncio.sleep(1)
+            await asyncio.sleep(0.1)
 
 
 if __name__ == '__main__':
-    if len(sys.argv) == 2:
+    if len(sys.argv) == 3:
         server = Server()
-        server.start_server(sys.argv[1])
+        server.start_server(sys.argv[1], sys.argv[2])
     else:
-        print('Usage: {} PORT'.format(sys.argv[0]))
+        print('Usage: {} IP PORT'.format(sys.argv[0]))
         sys.exit(1)

@@ -12,6 +12,7 @@ $(() => {
   }, 100);
   */
 
+  //var connection = new Connection('192.168.1.8:8765');
   var connection = new Connection('127.0.0.1:8765');
   connection.connect();
 
