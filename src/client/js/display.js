@@ -1,11 +1,11 @@
 'use strict';
 
 class Display {
-  width = 800;
-  height = 544;
 
   constructor(canvas) {
     this.canvas = canvas;
+    this.width = 800;
+    this.height = 544;
   }
 
   drawBackground() {
@@ -13,14 +13,17 @@ class Display {
       layer: true,
       source: 'img/background.jpg',
       scale: 1,
-      x: width / 2,
-      y: height / 2,
+      x: this.width / 2,
+      y: this.height / 2,
     });
   }
 
   drawFish(id, x, y, size, shadowColor) {
     var layer = `fish${id}`;
     var scale = 0.1; //size;
+
+    x = this.width  * x / 100;
+    y = this.height * y / 100;
 
     // check if layer exists
     if (this.canvas.getLayer(layer)) {
