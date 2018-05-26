@@ -2,62 +2,66 @@ INIT_PLAYER_SIZE = 1
 LEFT = 0
 RIGHT = 1
 
-players = []
-nonplayers = []
-
 class Fish:
-    def __init__(self, size, x, y):
-        self.size = size
+    def __init__(self, x, y, size):
         self.x = x
         self.y = y
+        self.size = size
         self.image = 0
         
-    def move(self):
-        pass
-        
 class Player(Fish):
-    def __init__(self, x, y):
-        super(Player, self).__init__(INIT_PLAYER_SIZE, x, y)
-        players.append(self)
+    def __init__(self, x, y, id):
+        super(Player, self).__init__(x, y, INIT_PLAYER_SIZE)
+        self.id = id
         
-    def move(self):
-        pass
+    def move(self, deltaX, deltaY):
+        self.x += deltaX
+        self.y += deltaY
         
 class Nonplayer(Fish):
-    def __init__(self, size, y, speed, direction):
+    def __init__(self, y, size, speed, direction):
         if direction == LEFT:
             x = 100
         elif direction == RIGHT:
             x = 0
-        super(Nonplayer, self).__init__(size, x, y)
+        super(Nonplayer, self).__init__(x, y, size)
         self.speed = speed
         self.direction = direction
-        nonplayers.append(self)
         
     def move(self):
         if self.direction == LEFT:
             self.x -= 1
         elif self.direction == RIGHT:
             self.x += 1
-
             
-def move_loop():
-    for nonplayer in nonplayers:
-        nonplayer.move()
-    for player in players:
-        player.move()
-        #TODO: collision check
+class Game:
+    def __init__(self):
+        self.players = []
+        self.nonplayers = []
+        
+    def create_player(self, x, y, id):
+        p = Player(x, y, id)
+        self.players.append(p)
+        
+    def remove_player(self, id):
+        for i in range(len(self.players)):
+            if self.players[i].id == id:
+                del self.players[i]
+                break
+                
+    def create_nonplayer(self, y, size, speed, direction):
+        np = Nonplayer(y, size, speed, direction)
+        self.nonplayers.append(np)
+        
+    def get_fish(self):
+        return self.players, self.nonplayers
 
-"""        
-p = Player(50, 50)
-np = Nonplayer(5, 20, 10, LEFT)
-print(p.x)
-print(p.y)
-print(np.x)
-print(np.y)
-move_loop()
-print(p.x)
-print(p.y)
-print(np.x)
-print(np.y)
-"""
+    def move_loop(self, playerMovements):
+        for nonplayer in self.nonplayers:
+            nonplayer.move()
+        for player in self.players:
+            if player.id in playerMovements:
+                deltaX = playerMovements[player.id][0]
+                deltaY = playerMovements[player.id][1]
+                player.move(deltaX, deltaY)
+            #TODO: collision check
