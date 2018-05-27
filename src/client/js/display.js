@@ -6,6 +6,8 @@ class Display {
     this.canvas = canvas;
     this.width = 800;
     this.height = 544;
+
+    this.drawBackground();
   }
 
   drawBackground() {

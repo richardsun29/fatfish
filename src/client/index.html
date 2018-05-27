@@ -2,17 +2,47 @@
 <html>
   <head>
     <title>Fat Fish</title>
+
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jcanvas/21.0.1/min/jcanvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
 
-    <link rel="stylesheet" href="css/style.css">
-
     <script src="/js/app.js"></script>
-    <script src="/js/display.js"></script>
     <script src="/js/connection.js"></script>
+    <script src="/js/display.js"></script>
+    <script src="/js/modal.js"></script>
+    <link rel="stylesheet" href="css/style.css">
   </head>
   <body>
     <canvas id="canvas" width="800" height="544"></canvas>
+
+    <div class="modal fade" id="connect-modal">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Connect to server</h5>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="server-ip">Server Address</label>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend"><span class="input-group-text">ws://</span></div>
+                <input id="server-ip" class="form-control" type="text" value="127.0.0.1:8765" required>
+              </div>
+              <label for="player-name">Player Name</label>
+              <input id="player-name" class="form-control" type="text">
+            </div>
+            <div id="connect-error" class="alert alert-danger">Connection Error</div>
+          </div>
+          <div class="modal-footer">
+            <button id="connect-submit" class="btn btn-primary">Connect</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button id="disconnect-btn" class="btn btn-secondary m-4">Disconnect</button>
   </body>
 </html>
