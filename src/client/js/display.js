@@ -36,16 +36,37 @@ class Display {
     });
   }
 
+  getShadowColor(playerSize, fishSize) {
+    // color fish red if bigger, yellow if same size, blue if smaller
+    if (fishSize > playerSize) {
+      return 'red';
+    }
+    if (fishSize < playerSize) {
+      return 'blue';
+    }
+    return 'yellow';
+  }
+
   draw(data) {
+    // this client's fish
+    var player = data.players.find(p => p.id == data.id);
+    var playerSize = player ? player.size : 0;
+
+    // reset canvas
     this.canvas.removeLayers();
     this.drawBackground();
 
     // draw fish
     data.players.forEach(p => {
-      this.drawFish(p.id, p.x, p.y, p.size, 'blue');
+      if (p.id == player.id) {
+        this.drawFish(p.id, p.x, p.y, p.size, undefined);
+      }
+      else {
+        this.drawFish(p.id, p.x, p.y, p.size, this.getShadowColor(playerSize, p.size));
+      }
     });
     data.nonplayers.forEach(p => {
-      this.drawFish(p.id, p.x, p.y, p.size, p.id%2 ? 'green': 'red');
+      this.drawFish(p.id, p.x, p.y, p.size, this.getShadowColor(playerSize, p.size));
     });
 
     this.canvas.drawLayers();

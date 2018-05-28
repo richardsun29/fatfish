@@ -95,9 +95,10 @@ class Server:
 
     async def game_loop(self):
         counter = 0
+        sizes = [0.9, 1, 2]
         while True:
             if counter % 10 == 0:
-                self.game.create_nonplayer(counter, 2, 1, game.LEFT)
+                self.game.create_nonplayer(counter, sizes[counter % 3], 1, game.LEFT)
             counter += 1
             if counter == 100:
                 counter = 0
