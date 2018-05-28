@@ -2,7 +2,6 @@
 
 import asyncio
 import websockets
-import signal
 import sys
 import json
 
@@ -78,8 +77,6 @@ class Server:
         # run server
         server = websockets.serve(self.handle_connection, ip, port)
         asyncio.get_event_loop().run_until_complete(server)
-        # Stop event loop on ^C
-        signal.signal(signal.SIGINT, asyncio.get_event_loop().close)
         # run game
         asyncio.get_event_loop().run_until_complete(self.game_loop())
         asyncio.get_event_loop().run_forever()
