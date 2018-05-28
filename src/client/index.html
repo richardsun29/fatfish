@@ -25,19 +25,21 @@
             <h5 class="modal-title">Connect to server</h5>
           </div>
           <div class="modal-body">
-            <div class="form-group">
-              <label for="server-ip">Server Address</label>
-              <div class="input-group mb-3">
-                <div class="input-group-prepend"><span class="input-group-text">ws://</span></div>
-                <input id="server-ip" class="form-control" type="text" value="127.0.0.1:8765" required>
+            <form id="connect-form">
+              <div class="form-group">
+                <label for="server-ip">Server Address</label>
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend"><span class="input-group-text">ws://</span></div>
+                  <input id="server-ip" class="form-control" type="text" value="127.0.0.1:8765" required>
+                </div>
               </div>
-              <label for="player-name">Player Name</label>
-              <input id="player-name" class="form-control" type="text">
-            </div>
-            <div id="connect-error" class="alert alert-danger">Connection Error</div>
-          </div>
-          <div class="modal-footer">
-            <button id="connect-submit" class="btn btn-primary">Connect</button>
+              <div class="form-group">
+                <label for="player-name">Player Name</label>
+                <input id="player-name" class="form-control" type="text" autofocus>
+              </div>
+              <div id="connect-error" class="alert alert-danger">Connection Error</div>
+              <button type="submit" class="btn btn-primary btn-lg btn-block">Connect</button>
+            </form>
           </div>
         </div>
       </div>

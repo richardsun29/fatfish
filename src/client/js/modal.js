@@ -4,7 +4,7 @@ class Modal {
   constructor() {
     this.modal = $('#connect-modal');
     this.alert = $('#connect-error');
-    this.submitbtn = $('#connect-submit');
+    this.form = $('#connect-form');
   }
 
   show(error = false) {
@@ -25,10 +25,11 @@ class Modal {
   }
 
   submit(callback) {
-    this.submitbtn.click(() => {
+    this.form.submit(() => {
       var ip = $('#server-ip').val();
       var name = $('#player-name').val();
       callback(ip, name);
+      return false;
     });
   }
 }

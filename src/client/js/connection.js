@@ -18,10 +18,10 @@ class Connection {
     }
   }
 
-  send_data(action, value) {
-    console.log({action, value});
-    if (this.websocket) {
-      this.websocket.send(JSON.stringify({action, value}));
+  send_data(action, data) {
+    if (this.websocket && this.websocket.readyState == WebSocket.OPEN) {
+      //console.log({action, data});
+      this.websocket.send(JSON.stringify({action, data}));
     }
   }
 }

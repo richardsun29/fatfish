@@ -18,18 +18,29 @@ class Client:
         self.id = None
 
     async def connect(self):
-        #self.game.create_player()
         # start sending/receiving
         recv_task = asyncio.ensure_future(self.receive_data())
         send_task = asyncio.ensure_future(self.send_data())
         await asyncio.gather(recv_task, send_task)
 
+    async def disconnect(self):
+        # cleanup
+        self.game.remove_player(self.id)
+
     async def receive_data(self):
         # listen
         while True:
             message = await self.websocket.recv()
-            print('receive_data: ' + message)
+            #print('receive_data: ' + message)
             message = json.loads(message)
+            action = message['action']
+            data = message['data']
+
+            if action == 'newplayer':
+                self.id = self.game.create_player(data['name'], 50, 50)
+
+            if action == 'move':
+                self.game.move_player(self.id, data['x'], data['y'])
 
     async def send_data(self):
         # send updates
@@ -39,6 +50,7 @@ class Client:
                 'id': self.id,
                 'players': [{
                     'id': p.id,
+                    'name': p.name,
                     'x': p.x,
                     'y':p.y,
                     'size': p.size,
@@ -78,6 +90,7 @@ class Server:
         try:
             await client.connect()
         except websockets.exceptions.ConnectionClosed:
+            await client.disconnect()
             self.clients.remove(client)
 
     async def game_loop(self):
