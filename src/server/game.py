@@ -24,7 +24,7 @@ class Player(Fish):
 class Nonplayer(Fish):
     def __init__(self, id, y, size, speed, direction):
         if direction == LEFT:
-            x = 100
+            x = 800
         elif direction == RIGHT:
             x = 0
         super(Nonplayer, self).__init__(id, x, y, size)
@@ -75,7 +75,7 @@ class Game:
     def move_loop(self):
         for nonplayer in self.nonplayers:
             nonplayer.move()
-        self.nonplayers = [nonplayer for nonplayer in self.nonplayers if nonplayer.x >= -50 and nonplayer.x <= 150]
+        self.nonplayers = [nonplayer for nonplayer in self.nonplayers if nonplayer.x >= -400 and nonplayer.x <= 1200]
         for player in self.players:
             if player.id in self.playerMovements:
                 deltaX = self.playerMovements[player.id][0]
