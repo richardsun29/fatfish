@@ -11,8 +11,9 @@ class Fish:
         self.image = 0
         
 class Player(Fish):
-    def __init__(self, id, x, y):
+    def __init__(self, id, name, x, y):
         super(Player, self).__init__(id, x, y, INIT_PLAYER_SIZE)
+        self.name = name
         
     def move(self, deltaX, deltaY):
         self.x += deltaX
@@ -51,8 +52,8 @@ class Game:
         self.next_id += 1
         return self.next_id
 
-    def create_player(self, x, y):
-        p = Player(self.get_new_id(), x, y)
+    def create_player(self, name, x, y):
+        p = Player(self.get_new_id(), name, x, y)
         self.players.append(p)
         return p.id
         
@@ -82,7 +83,6 @@ class Game:
                 deltaY = self.playerMovements[player.id][1]
                 player.move(deltaX, deltaY)
             #TODO: collision check
-        self.playerMovements = {}
 
 def test1():
     g = Game()

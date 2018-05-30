@@ -1,34 +1,27 @@
 'use strict';
 
 class Connection {
-  constructor(addr) {
-    this.addr = 'ws://' + addr;
+  constructor() {
   }
 
-  connect() {
-    this.websocket = new WebSocket(this.addr);
+  connect(addr, onopen, onmessage, onclose) {
+    this.websocket = new WebSocket('ws://' + addr);
 
-    // listen for messages
-    this.websocket.onmessage = event => this.receive_data(event.data);
-
-    // connection close
-    this.websocket.onclose = event => console.log('Websocket closed.', event);
+    this.websocket.onopen = onopen;
+    this.websocket.onmessage = onmessage;
+    this.websocket.onclose = onclose;
   }
 
-  onmessage(callback) {
-    this.websocket.onmessage = event => callback(JSON.parse(event.data));
+  disconnect() {
+    if (this.websocket) {
+      this.websocket.close();
+    }
   }
 
-  onclose(callback) {
-    this.websocket.onclose = callback;
-  }
-
-  receive_data(data) {
-    console.log(JSON.parse(data));
-  }
-
-  send_data(action, value) {
-    console.log({action, value});
-    this.websocket.send(JSON.stringify({action, value}));
+  send_data(action, data) {
+    if (this.websocket && this.websocket.readyState == WebSocket.OPEN) {
+      //console.log({action, data});
+      this.websocket.send(JSON.stringify({action, data}));
+    }
   }
 }
