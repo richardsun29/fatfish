@@ -25,9 +25,6 @@ class Display {
     var layer = `fish${id}`;
     var scale = size / 10;
 
-    x = this.width  * x / 100;
-    y = this.height * y / 100;
-
     this.canvas.drawImage({x, y, scale, shadowColor,
       layer: true,
       name: layer,

@@ -1,4 +1,5 @@
 INIT_PLAYER_SIZE = 1
+PLAYER_SPEED = 5
 LEFT = 0
 RIGHT = 1
 
@@ -71,7 +72,7 @@ class Game:
         return self.players, self.nonplayers
         
     def move_player(self, id, deltaX, deltaY):
-            self.playerMovements[id] = (deltaX, deltaY)
+            self.playerMovements[id] = (deltaX * PLAYER_SPEED, deltaY * PLAYER_SPEED)
 
     def move_loop(self):
         for nonplayer in self.nonplayers:

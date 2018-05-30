@@ -94,10 +94,10 @@ class Server:
         counter = 0
         sizes = [0.9, 1, 2]
         while True:
-            if counter % 10 == 0:
-                self.game.create_nonplayer(counter, sizes[counter % 3], 1, game.LEFT)
+            if counter % 100 == 0:
+                self.game.create_nonplayer(counter, sizes[counter % 3], 3, game.LEFT)
             counter += 1
-            if counter == 100:
+            if counter == 500:
                 counter = 0
 
             self.game.move_loop()
