@@ -23,7 +23,8 @@ class Display {
 
   drawFish(id, x, y, size, shadowColor) {
     var layer = `fish${id}`;
-    var scale = size / 10;
+    // length (in pixels) is 70% of scale (hitbox is smaller than fish)
+    var scale = this.sizeToLength(size) / 240 / 0.7;
 
     this.canvas.drawImage({x, y, scale, shadowColor,
       layer: true,
@@ -44,10 +45,14 @@ class Display {
     return 'yellow';
   }
 
+  sizeToLength(size) {
+    return 4 + Math.sqrt(size) * 6;
+  };
+
   draw(data) {
     // this client's fish
     var player = data.players.find(p => p.id == data.id);
-    var playerSize = player ? player.size : 0;
+    if (!player) return;
 
     // reset canvas
     this.canvas.removeLayers();
@@ -59,11 +64,11 @@ class Display {
         this.drawFish(p.id, p.x, p.y, p.size, undefined);
       }
       else {
-        this.drawFish(p.id, p.x, p.y, p.size, this.getShadowColor(playerSize, p.size));
+        this.drawFish(p.id, p.x, p.y, p.size, this.getShadowColor(player.size, p.size));
       }
     });
     data.nonplayers.forEach(p => {
-      this.drawFish(p.id, p.x, p.y, p.size, this.getShadowColor(playerSize, p.size));
+      this.drawFish(p.id, p.x, p.y, p.size, this.getShadowColor(player.size, p.size));
     });
 
     this.canvas.drawLayers();
