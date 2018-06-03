@@ -21,26 +21,27 @@ class Display {
     });
   }
 
-  drawFish(id, x, y, size, shadowColor) {
+  drawFish(id, x, y, size, color) {
     var layer = `fish${id}`;
     // length (in pixels) is 70% of scale (hitbox is smaller than fish)
-    var scale = this.sizeToLength(size) / 240 / 0.7;
+    var scale = this.sizeToLength(size) / 512 / 0.7;
 
-    this.canvas.drawImage({x, y, scale, shadowColor,
+    this.canvas.drawImage({x, y, scale,
       layer: true,
       name: layer,
-      source: 'img/fish.png',
-      shadowBlur: 20
+      source: `img/fish-${color}.png`,
+      shadowColor: 'black',
+      shadowBlur: 10
     });
   }
 
-  getShadowColor(playerSize, fishSize) {
+  getColor(playerSize, fishSize) {
     // color fish red if bigger, yellow if same size, blue if smaller
     if (fishSize > playerSize) {
       return 'red';
     }
     if (fishSize < playerSize) {
-      return 'blue';
+      return 'green';
     }
     return 'yellow';
   }
@@ -61,14 +62,14 @@ class Display {
     // draw fish
     data.players.forEach(p => {
       if (p.id == player.id) {
-        this.drawFish(p.id, p.x, p.y, p.size, undefined);
+        this.drawFish(p.id, p.x, p.y, p.size, 'purple');
       }
       else {
-        this.drawFish(p.id, p.x, p.y, p.size, this.getShadowColor(player.size, p.size));
+        this.drawFish(p.id, p.x, p.y, p.size, this.getColor(player.size, p.size));
       }
     });
     data.nonplayers.forEach(p => {
-      this.drawFish(p.id, p.x, p.y, p.size, this.getShadowColor(player.size, p.size));
+      this.drawFish(p.id, p.x, p.y, p.size, this.getColor(player.size, p.size));
     });
 
     this.canvas.drawLayers();
