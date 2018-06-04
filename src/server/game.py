@@ -67,9 +67,9 @@ class Player(Fish):
     def move(self, delta_x, delta_y):
         self.x += delta_x
         self.y += delta_y
-        if deltaX > 0:
+        if delta_x > 0:
             self.direction = RIGHT
-        elif deltaX < 0:
+        elif delta_x < 0:
             self.direction = LEFT
 
     def grow(self, food_size):
@@ -172,7 +172,7 @@ class Game:
                 delta_x = self.player_movements[player.id][0]
                 delta_y = self.player_movements[player.id][1]
                 player.move(delta_x, delta_y)
-        self.player_movements = {}
+        #self.player_movements = {}
         
         #collision check
         for player in self.players:
