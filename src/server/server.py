@@ -44,23 +44,7 @@ class Client:
     async def send_data(self):
         # send updates
         while True:
-            players, nonplayers = self.game.get_fish()
-            message = json.dumps({
-                'id': self.id,
-                'players': [{
-                    'id': p.id,
-                    'name': p.name,
-                    'x': p.x,
-                    'y':p.y,
-                    'size': p.size,
-                } for p in players],
-                'nonplayers': [{
-                    'id': p.id,
-                    'x': p.x,
-                    'y':p.y,
-                    'size': p.size,
-                } for p in nonplayers],
-            })
+            message = json.dumps(self.game.get_game_state(self.id))
             await self.websocket.send(message)
             await asyncio.sleep(SEND_UPDATES_DELAY)
 

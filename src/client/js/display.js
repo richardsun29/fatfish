@@ -1,5 +1,8 @@
 'use strict';
 
+const LEFT = 0;
+const RIGHT = 1;
+
 class Display {
 
   constructor(canvas) {
@@ -21,17 +24,18 @@ class Display {
     });
   }
 
-  drawFish(id, x, y, size, color) {
+  drawFish(id, x, y, size, direction, color) {
     var layer = `fish${id}`;
     // length (in pixels) is 70% of scale (hitbox is smaller than fish)
     var scale = this.sizeToLength(size) / 512 / 0.7;
+    var direction = direction == LEFT ? 'left' : 'right';
 
     this.canvas.drawImage({x, y, scale,
       layer: true,
       name: layer,
-      source: `img/fish-${color}.png`,
+      source: `img/fish-${color}-${direction}.png`,
       shadowColor: 'black',
-      shadowBlur: 10
+      shadowBlur: 10,
     });
   }
 
@@ -62,14 +66,14 @@ class Display {
     // draw fish
     data.players.forEach(p => {
       if (p.id == player.id) {
-        this.drawFish(p.id, p.x, p.y, p.size, 'purple');
+        this.drawFish(p.id, p.x, p.y, p.size, p.direction, 'purple');
       }
       else {
-        this.drawFish(p.id, p.x, p.y, p.size, this.getColor(player.size, p.size));
+        this.drawFish(p.id, p.x, p.y, p.size, p.direction, this.getColor(player.size, p.size));
       }
     });
     data.nonplayers.forEach(p => {
-      this.drawFish(p.id, p.x, p.y, p.size, this.getColor(player.size, p.size));
+      this.drawFish(p.id, p.x, p.y, p.size, p.direction, this.getColor(player.size, p.size));
     });
 
     this.canvas.drawLayers();

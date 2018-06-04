@@ -15,10 +15,15 @@ class Player(Fish):
     def __init__(self, id, name, x, y):
         super(Player, self).__init__(id, x, y, INIT_PLAYER_SIZE)
         self.name = name
-        
+        self.direction = RIGHT
+
     def move(self, deltaX, deltaY):
         self.x += deltaX
         self.y += deltaY
+        if deltaX > 0:
+            self.direction = RIGHT
+        elif deltaX < 0:
+            self.direction = LEFT
 
     def __repr__(self):
         return 'Player (id = %d, x = %d, y = %d)' % (self.id, self.x, self.y)
@@ -70,6 +75,26 @@ class Game:
         
     def get_fish(self):
         return self.players, self.nonplayers
+
+    def get_game_state(self, player_id):
+        return {
+            'id': player_id,
+            'players': [{
+                'id': p.id,
+                'name': p.name,
+                'x': p.x,
+                'y':p.y,
+                'size': p.size,
+                'direction': p.direction,
+            } for p in self.players],
+            'nonplayers': [{
+                'id': p.id,
+                'x': p.x,
+                'y':p.y,
+                'size': p.size,
+                'direction': p.direction,
+            } for p in self.nonplayers],
+        }
         
     def move_player(self, id, deltaX, deltaY):
             self.playerMovements[id] = (deltaX * PLAYER_SPEED, deltaY * PLAYER_SPEED)
