@@ -24,19 +24,35 @@ class Display {
     });
   }
 
-  drawFish(id, x, y, size, direction, color) {
-    var layer = `fish${id}`;
+  drawFish(fish, color) {
+    var layer = `fish${fish.id}`;
     // length (in pixels) is 70% of scale (hitbox is smaller than fish)
-    var scale = this.sizeToLength(size) / 512 / 0.7;
-    var direction = direction == LEFT ? 'left' : 'right';
+    var scale = this.sizeToLength(fish.size) / 512 / 0.7;
+    var direction = fish.direction == LEFT ? 'left' : 'right';
 
-    this.canvas.drawImage({x, y, scale,
+    this.canvas.drawImage({
+      x: fish.x, y: fish.y,
+      scale: scale,
       layer: true,
       name: layer,
       source: `img/fish-${color}-${direction}.png`,
       shadowColor: 'black',
       shadowBlur: 10,
     });
+
+    if (fish.name) {
+      this.canvas.drawText({
+        text: fish.name,
+        layer: true,
+        x: fish.x,
+        y: fish.y + this.sizeToWidth(fish.size) + 5,
+        fontSize: '10pt',
+        fontFamily: 'Arial',
+        fillStyle: 'black',
+        //strokeStyle: 'black',
+        //strokeWidth: 1,
+      });
+    }
   }
 
   getColor(playerSize, fishSize) {
@@ -52,7 +68,11 @@ class Display {
 
   sizeToLength(size) {
     return 4 + Math.sqrt(size) * 6;
-  };
+  }
+
+  sizeToWidth(size) {
+    return this.sizeToLength(size) * 0.7;
+  }
 
   draw(data) {
     // this client's fish
@@ -66,14 +86,14 @@ class Display {
     // draw fish
     data.players.forEach(p => {
       if (p.id == player.id) {
-        this.drawFish(p.id, p.x, p.y, p.size, p.direction, 'purple');
+        this.drawFish(p, 'purple');
       }
       else {
-        this.drawFish(p.id, p.x, p.y, p.size, p.direction, this.getColor(player.size, p.size));
+        this.drawFish(p, this.getColor(player.size, p.size));
       }
     });
     data.nonplayers.forEach(p => {
-      this.drawFish(p.id, p.x, p.y, p.size, p.direction, this.getColor(player.size, p.size));
+      this.drawFish(p, this.getColor(player.size, p.size));
     });
 
     this.canvas.drawLayers();
