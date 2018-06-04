@@ -4,6 +4,7 @@ class App {
   constructor() {
     this.modal = new Modal();
     this.display = new Display($('#canvas'));
+    this.leaderboard = new Leaderboard($('#leaderboard'));
     this.connection = new Connection();
     this.moveDirection = {x: 0, y: 0};
     this.dead = false;
@@ -104,6 +105,7 @@ class App {
     }
     else {
       this.display.draw(data);
+      this.leaderboard.update(data);
     }
   }
 
