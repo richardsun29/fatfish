@@ -47,13 +47,7 @@ class Fish:
         y4 = fish_box2[1][1]
         
         collision = False
-        
-        #x overlap
-        if x1 <= x4 and x3 <= x2:
-            collision = True
-            
-        #y overlap
-        if y1 <= y4 and y3 <= y2:
+        if x1 <= x4 and x3 <= x2 and y1 <= y4 and y3 <= y2:
             collision = True
             
         return collision
