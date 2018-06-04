@@ -6,9 +6,10 @@ class App {
     this.display = new Display($('#canvas'));
     this.connection = new Connection();
     this.moveDirection = {x: 0, y: 0};
+    this.dead = false;
 
     // connect to server stuff
-    this.modal.show(false);
+    this.modal.show(null);
     this.modal.submit(this.connect.bind(this));
     $('#disconnect-btn').click(() => {
       this.connection.disconnect();
@@ -88,15 +89,32 @@ class App {
   onopen(event, name) {
     this.modal.hide();
     this.connection.send_data('newplayer', { name });
+    this.dead = false;
   }
 
   onmessage(event) {
     var data = JSON.parse(event.data);
-    this.display.draw(data);
+    if (data.status == 'dead') {
+      this.dead = true;
+      this.connection.disconnect();
+    }
+    else {
+      this.display.draw(data);
+    }
   }
 
   onclose(event) {
-    this.modal.show(!event.wasClean);
+    if (event.wasClean) {
+      if (this.dead) {
+        this.modal.show('You got eaten!');
+      }
+      else {
+        this.modal.show();
+      }
+    }
+    else {
+      this.modal.show('Connection Error');
+    }
   }
 }
 

@@ -7,16 +7,17 @@ class Modal {
     this.form = $('#connect-form');
   }
 
-  show(error = false) {
+  show(error) {
     this.modal.modal({backdrop: 'static', keyboard: false});
-    error ? this.showError() : this.hideError();
+    error ? this.showError(error) : this.hideError();
   }
 
   hide() {
     this.modal.modal('hide');
   }
 
-  showError() {
+  showError(error) {
+    this.alert.text(error);
     this.alert.show();
   }
 

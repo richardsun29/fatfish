@@ -4,6 +4,7 @@ import asyncio
 import websockets
 import sys
 import json
+import random
 
 import game
 
@@ -74,12 +75,19 @@ class Server:
             await client.disconnect()
             self.clients.remove(client)
 
+    def rand_size(self):
+        if random.random() < 0.1:
+            return random.uniform(30, 100)
+        else:
+            return random.uniform(1, 5)
+
     async def game_loop(self):
         counter = 0
-        sizes = [0.9, 1, 2]
         while True:
             if counter % 100 == 0:
-                self.game.create_nonplayer(counter, sizes[counter % 3], 3, game.LEFT)
+                self.game.create_nonplayer(counter, self.rand_size(), 3, game.LEFT)
+            elif counter % 100 == 50:
+                self.game.create_nonplayer(counter, self.rand_size(), 3, game.RIGHT)
             counter += 1
             if counter == 500:
                 counter = 0

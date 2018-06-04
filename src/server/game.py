@@ -1,6 +1,6 @@
 import math
 
-INIT_PLAYER_SIZE = 1
+INIT_PLAYER_SIZE = 3
 PLAYER_SPEED = 5
 LEFT = 0
 RIGHT = 1
@@ -57,6 +57,7 @@ class Player(Fish):
         super(Player, self).__init__(id, x, y, INIT_PLAYER_SIZE)
         self.name = name
         self.direction = RIGHT
+        self.is_dead = False
 
     def move(self, delta_x, delta_y):
         self.x += delta_x
@@ -129,9 +130,24 @@ class Game:
     def get_fish(self):
         return self.players, self.nonplayers
 
+    def is_player_dead(self, player_id):
+        for p in self.players:
+            if p.id == player_id:
+                return p.is_dead
+        return False
+
     def get_game_state(self, player_id):
+        if self.is_player_dead(player_id):
+            return {
+                'id': player_id,
+                'status': 'dead',
+                'players': [],
+                'nonplayers': [],
+            }
+
         return {
             'id': player_id,
+            'status': 'alive',
             'players': [{
                 'id': p.id,
                 'name': p.name,
@@ -162,20 +178,22 @@ class Game:
         
         #players move
         for player in self.players:
-            if player.id in self.player_movements:
-                delta_x = self.player_movements[player.id][0]
-                delta_y = self.player_movements[player.id][1]
-                player.move(delta_x, delta_y)
+            if not player.is_dead:
+                if player.id in self.player_movements:
+                    delta_x = self.player_movements[player.id][0]
+                    delta_y = self.player_movements[player.id][1]
+                    player.move(delta_x, delta_y)
         #self.player_movements = {}
         
         #collision check
-        for player in self.players:
-            for player2 in self.players:
+        for player in [p for p in self.players if not p.is_dead]:
+            for player2 in [p for p in self.players if not p.is_dead]:
                 if player.collision_check(player2) and player.size > player2.size:
                     if player.id not in self.player_growths:
                         self.player_growths[player.id] = 0
                     self.player_growths[player.id] += player2.size
-                    self.player_deaths.add(player2.id)
+                    #self.player_deaths.add(player2.id)
+                    player2.is_dead = True
             for nonplayer in self.nonplayers:
                 if player.collision_check(nonplayer):
                     if player.size > nonplayer.size:
@@ -184,7 +202,8 @@ class Game:
                         self.player_growths[player.id] += nonplayer.size
                         self.nonplayer_deaths.add(nonplayer.id)
                     elif player.size < nonplayer.size:
-                        self.player_deaths.add(player.id)
+                        #self.player_deaths.add(player.id)
+                        player.is_dead = True
                         
         #players grow
         for player in self.players:
@@ -193,7 +212,7 @@ class Game:
         self.player_growths = {}
                 
         #players and nonplayers die
-        self.players = [player for player in self.players if player.id not in self.player_deaths]
+        #self.players = [player for player in self.players if player.id not in self.player_deaths]
         self.nonplayers = [nonplayer for nonplayer in self.nonplayers if nonplayer.id not in self.nonplayer_deaths]
         self.player_deaths = set()
         self.nonplayer_deaths = set()
