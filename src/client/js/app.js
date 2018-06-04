@@ -80,10 +80,14 @@ class App {
   }
 
   connect(ip, name) {
-    this.connection.connect(ip,
-        (event) => this.onopen(event, name),
-        (event) => this.onmessage(event),
-        (event) => this.onclose(event));
+    try {
+      this.connection.connect(ip,
+          (event) => this.onopen(event, name),
+          (event) => this.onmessage(event),
+          (event) => this.onclose(event));
+    } catch(e) {
+      this.modal.show('Connection Error');
+    }
   }
 
   onopen(event, name) {
