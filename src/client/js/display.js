@@ -67,7 +67,7 @@ class Display {
   }
 
   sizeToLength(size) {
-    return 4 + Math.sqrt(size) * 6;
+    return 4 + Math.sqrt(size) * 3;
   }
 
   sizeToWidth(size) {

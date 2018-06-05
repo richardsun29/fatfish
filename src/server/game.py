@@ -1,11 +1,17 @@
 import math
+import random
 
 INIT_PLAYER_SIZE = 3
 PLAYER_SPEED = 5
 LEFT = 0
 RIGHT = 1
+MAX_NONPLAYERS = 10
 
 #screen size: 800 x 544
+SCREEN_X = 800
+SCREEN_Y = 544
+X_BOUND_MIN = SCREEN_X * -0.5
+X_BOUND_MAX = SCREEN_X * 1.5
 
 class Fish:
     def __init__(self, id, x, y, size):
@@ -15,7 +21,7 @@ class Fish:
         self.size = size
         
     def size_to_length(self):
-        return 4 + math.sqrt(self.size) * 6
+        return 4 + math.sqrt(self.size) * 3
         
     def size_to_width(self):
         return self.size_to_length() * 3/4
@@ -53,7 +59,9 @@ class Fish:
         return collision
         
 class Player(Fish):
-    def __init__(self, id, name, x, y):
+    def __init__(self, id, name):
+        x = random.randint(50, SCREEN_X - 50)
+        y = random.randint(50, SCREEN_Y - 50)
         super(Player, self).__init__(id, x, y, INIT_PLAYER_SIZE)
         self.name = name
         self.direction = RIGHT
@@ -74,14 +82,25 @@ class Player(Fish):
         return 'Player (id = %d, x = %d, y = %d)' % (self.id, self.x, self.y)
         
 class Nonplayer(Fish):
-    def __init__(self, id, y, size, speed, direction):
+    def __init__(self, id):
+        y = random.randint(50, SCREEN_Y - 50)
+        size = self.rand_size()
+        speed = 3 # TODO: make this random?
+        direction = random.choice([LEFT, RIGHT])
         if direction == LEFT:
-            x = 800
+            x = random.randint(SCREEN_X, X_BOUND_MAX)
         elif direction == RIGHT:
-            x = 0
+            x = random.randint(X_BOUND_MIN, 0)
         super(Nonplayer, self).__init__(id, x, y, size)
         self.speed = speed
         self.direction = direction
+
+    def rand_size(self):
+        # TODO: make this better
+        if random.random() < 0.5:
+            return random.randint(100, 1000)
+        else:
+            return random.randint(1, 10)
         
     def move(self):
         if self.direction == LEFT:
@@ -98,16 +117,19 @@ class Game:
         self.nonplayers = []
         self.player_movements = {}    #key: id, value: (delta x, delta y)
         self.player_growths = {}      #key: id, value: size of fish eaten
-        self.player_deaths = set()    #dead player fish IDs
+        #self.player_deaths = set()    #dead player fish IDs
         self.nonplayer_deaths = set() #dead nonplayer fish IDs
         self.next_id = 0
+
+        # generate nonplayer fish
+        self.create_nonplayers()
 
     def get_new_id(self):
         self.next_id += 1
         return self.next_id
 
-    def create_player(self, name, x, y):
-        p = Player(self.get_new_id(), name, x, y)
+    def create_player(self, name):
+        p = Player(self.get_new_id(), name)
         self.players.append(p)
         return p.id
         
@@ -117,18 +139,16 @@ class Game:
                 del self.players[i]
                 break
                 
-    def create_nonplayer(self, y, size, speed, direction):
-        np = Nonplayer(self.get_new_id(), y, size, speed, direction)
-        self.nonplayers.append(np)
+    def create_nonplayers(self):
+        while len(self.nonplayers) < MAX_NONPLAYERS:
+            np = Nonplayer(self.get_new_id())
+            self.nonplayers.append(np)
         
     def remove_nonplayer(self, id):
         for i, nonplayer in enumerate(self.nonplayers):
             if nonplayer.id == id:
                 del self.nonplayers[i]
                 break
-        
-    def get_fish(self):
-        return self.players, self.nonplayers
 
     def is_player_dead(self, player_id):
         for p in self.players:
@@ -174,7 +194,7 @@ class Game:
             nonplayer.move()
             
         #remove nonplayers that are far off screen
-        self.nonplayers = [nonplayer for nonplayer in self.nonplayers if nonplayer.x >= -400 and nonplayer.x <= 1200]
+        self.nonplayers = [nonplayer for nonplayer in self.nonplayers if nonplayer.x >= X_BOUND_MIN and nonplayer.x <= X_BOUND_MAX]
         
         #players move
         for player in self.players:
@@ -210,13 +230,19 @@ class Game:
             if player.id in self.player_growths:
                 player.grow(self.player_growths[player.id])
         self.player_growths = {}
-                
-        #players and nonplayers die
+
+        #server.py cleans up players
         #self.players = [player for player in self.players if player.id not in self.player_deaths]
+        #self.player_deaths = set()
+
+        #nonplayers die
         self.nonplayers = [nonplayer for nonplayer in self.nonplayers if nonplayer.id not in self.nonplayer_deaths]
-        self.player_deaths = set()
         self.nonplayer_deaths = set()
-    
+
+        # respawn nonplayers
+        self.create_nonplayers()
+
+
 def test_collision():
     p1 = Player(1, "kaitlyne", 20, 30)
     p2 = Player(2, "richard", 20, 31)

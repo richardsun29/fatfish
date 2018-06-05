@@ -37,7 +37,7 @@ class Client:
             data = message['data']
 
             if action == 'newplayer':
-                self.id = self.game.create_player(data['name'], 50, 50)
+                self.id = self.game.create_player(data['name'])
 
             if action == 'move':
                 self.game.move_player(self.id, data['x'], data['y'])
@@ -75,27 +75,10 @@ class Server:
             await client.disconnect()
             self.clients.remove(client)
 
-    def rand_size(self):
-        if random.random() < 0.1:
-            return random.uniform(30, 100)
-        else:
-            return random.uniform(1, 5)
-
     async def game_loop(self):
-        counter = 0
         while True:
-            if counter % 100 == 0:
-                self.game.create_nonplayer(counter, self.rand_size(), 3, game.LEFT)
-            elif counter % 100 == 50:
-                self.game.create_nonplayer(counter, self.rand_size(), 3, game.RIGHT)
-            counter += 1
-            if counter == 500:
-                counter = 0
-
             self.game.move_loop()
-            #players, nonplayers = self.game.get_fish()
-            #print(nonplayers)
-            await asyncio.sleep(0.1)
+            await asyncio.sleep(GAME_LOOP_DELAY)
 
 
 if __name__ == '__main__':
