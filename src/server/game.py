@@ -1,7 +1,7 @@
 import math
 import random
 
-INIT_PLAYER_SIZE = 3
+INIT_PLAYER_SIZE = 5
 PLAYER_SPEED = 5
 LEFT = 0
 RIGHT = 1
@@ -97,10 +97,10 @@ class Nonplayer(Fish):
 
     def rand_size(self):
         # TODO: make this better
-        if random.random() < 0.5:
+        if random.random() < 0.3:
             return random.randint(100, 1000)
         else:
-            return random.randint(1, 10)
+            return random.randint(1, 8)
         
     def move(self):
         if self.direction == LEFT:
