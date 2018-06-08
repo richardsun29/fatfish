@@ -14,7 +14,7 @@ cd src/server
 python server.py localhost 8765
 ```
 
-3. Serve the client files:
+3. Serve the client files (in a different terminal):
 ```
 cd src/client
 python -m http.server 8000
